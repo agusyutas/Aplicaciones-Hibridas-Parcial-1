@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcial-1</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1 class="text-light">API de Fichas Técnicas de Autos</h1>
+        </nav>
+    </header>
+    <main class="container">
+        <div class="row mt-2">
+            <div class="info">
+                <p class="p-info">
+                    Esta API de Fichas Técnicas de Autos sirve para manejar información de usuarios, autos y marcas. 
+                    Se hizo con Node.js, Express y MongoDB, y funciona con endpoints que permiten consultar, agregar, 
+                    actualizar o eliminar información, y todo se maneja en formato JSON.
+                </p>
+                <p class="p-info">
+                    Con respecto a los usuarios, la API permite registrar nuevos usuarios con sus datos básicos (nombre, email y contraseña),
+                    listar a todos los que ya están guardados, consultar un usuario específico a través de su ID, modificar sus datos si fuera
+                    necesario o directamente eliminarlos de la base de datos.
+                </p>
+                <p class="p-info">
+                    En cuanto a los autos, se pueden consultar todos los modelos disponibles y también agregar autos nuevos con sus características
+                    completas: marca, modelo, año, tipo de motor, potencia, velocidad máxima y tipo de combustible. Además, es posible buscar un 
+                    auto en particular por su ID, editar sus datos si hay cambios o eliminarlo si ya no corresponde tenerlo en la base de datos.
+                </p>
+                <p class="p-info">
+                    Por el lado de las marcas, la API maneja la información de cada fabricante, permitiendo cargar el nombre de la marca junto a su
+                    país de origen. Al igual que con los usuarios y autos, se pueden listar todas las marcas disponibles, consultar una marca en 
+                    específico mediante su ID, modificar sus datos o eliminarla.
+                </p>
+            </div>
+            <section>
+                <h2>Usuarios:</h2>
+                <div class="col">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="badge text-bg-info">GET</span>
+                            <a href="/api/usuarios" target="_blank">/api/usuarios</a>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge text-bg-success">POST</span>
+                            <a href="/api/usuarios" target="_blank">/api/usuarios</a>
+                            <pre>
+                                {
+                                 "name": "Agustin",
+                                 "email": "agus@gamil.com"
+                                }
+                            </pre>
+                        </li>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge text-bg-warning">PUT</span>
+                            <a href="/api/usuarios" target="_blank">/api/usuarios</a>
+                            <pre>
+                                {
+                                 "name": "Agustin Y.",
+                                 "email": "agusnuevo@gmail.com"
+                                }
+                            </pre>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h2>Autos:</h2>
+                <div class="col">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="badge text-bg-info">GET</span>
+                            <a href="/api/autos" target="_blank">/api/autos</a>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge text-bg-success">POST</span>
+                            <a href="/api/autos" target="_blank">/api/autos</a>
+                            <pre>
+                                {
+                                    "marca": "BMW",
+                                    "modelo": "M4",
+                                    "año": 2022,
+                                    "motor": "3.0L I6 Twin-Turbo",
+                                    "potencia": "473 hp",
+                                    "velocidadMax": "280 km/h",
+                                    "combustible": "Nafta"
+                                }
+                            </pre>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge text-bg-warning">PUT</span>
+                            <a href="/api/autos" target="_blank">/api/autos</a>
+                            <pre>
+                                {
+                                    "marca": "BMW",
+                                    "modelo": "M4 Competition"
+                                    "año": 2023,
+                                    "motor": "3.0L I6 Twin-Turbo",
+                                    "potencia": "510 hp"
+                                    "velocidadMax": "340 km/h",
+                                    "combustible": "Nafta"
+                                }
+                            </pre>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h2>Marcas:</h2>
+                <div class="col">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="badge text-bg-info">GET</span>
+                            <a href="/api/marcas" target="_blank">/api/marcas</a>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge text-bg-success">POST</span>
+                            <a href="/api/marcas" target="_blank">/api/marcas</a>
+                            <pre>
+                                {
+                                     "marca": "BMW"
+                                     "pais": "Alemania"
+                                }
+                            </pre>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="badge text-bg-warning">PUT</span>
+                            <a href="/api/marcas" target="_blank">/api/marcas</a>
+                            <pre>
+                                {
+                                "marca": "BMW",
+                                "pais": "Alemania - Actualizado"
+                                }
+                            </pre>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p class="text-light">
+            Agustin Yutas De Lorenzo | Aplicaciones Hibridas | Jonathan Emanuel Cruz | DWN4AV
+        </p>
+    </footer>
+</body>
+</html>

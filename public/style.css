@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header{
+  text-align: center;
+  padding: 40px;
+  margin-bottom: 20px;
+  background-color: rgb(6, 6, 178);
+  height: 15vh;
+}
+
+main {
+  min-height: 75vh;
+}
+
+.info {
+  background: #e9eaea; 
+  border: 1px solid #dee2e6; 
+  border-radius: 12px; 
+  margin-top: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
+}
+
+.p-info {
+  margin-bottom: 15px;
+  text-align: justify; 
+}
+
+h2{
+  padding-top: 20px;
+}
+
+footer{
+  text-align: center;
+  padding: 40px;
+  margin-top: 20px;
+  background-color: rgb(6, 6, 178);
+  height: 10vh;
+}
