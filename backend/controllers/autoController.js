@@ -3,7 +3,9 @@ import Auto from '../model/autosModel.js';
 
 const getAutos = async (req, res) => {
     try {
-        const autos = await Auto.find();
+        const {id, rol} = req.user;
+        const filter = rol === 'admin'?{}:{user: id}
+        const autos = await Auto.find(filter).populate('user','name email');
         res.json(autos);
     } catch (error) {
         console.error(error);
@@ -36,7 +38,9 @@ const addAuto = async (req, res) => {
             return res.status(400).json({ msg: 'Faltan campos obligatorios' });
         }
 
-        const nuevoAuto = new Auto({ marca, modelo, año, motor, potencia, velocidadMax, combustible });
+        const userId = req.user.id;
+
+        const nuevoAuto = new Auto({ marca, modelo, año, motor, potencia, velocidadMax, combustible, user: userId});
         await nuevoAuto.save();
 
         res.status(201).json({ msg: 'Auto agregado correctamente', auto: nuevoAuto });

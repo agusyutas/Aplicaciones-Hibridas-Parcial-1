@@ -16,7 +16,12 @@ const autoSchema = new mongoose.Schema({
   motor: String,
   potencia: String,
   velocidadMax: String,
-  combustible: String
+  combustible: String,
+  user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    }
 },{
     timestamps: true
 });
