@@ -5,7 +5,7 @@ import Loading from '../components/Loading'
 
 const Register = () => {
 
-  const endPoint = 'http://localhost:3000/api/usuarios';
+  const endPoint = "https://aplicaciones-hibridas-final-o6zz.onrender.com/api/usuarios";
 
   const [ error, setError ] = useState( false);
   const [ msgError, setMsgError ] = useState('');

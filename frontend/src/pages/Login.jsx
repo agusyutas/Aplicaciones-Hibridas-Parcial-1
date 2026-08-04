@@ -13,7 +13,7 @@ const Login = () => {
     const handleSubmit = async (e) =>{
         e.preventDefault();
         try {
-            const endPoint = 'http://127.0.0.1:3000/api/usuarios/auth';
+            const endPoint = "https://aplicaciones-hibridas-final-o6zz.onrender.com/api/usuarios/auth";
             const user = {
                 email: emailRef.current.value,
                 password: passwordRef.current.value

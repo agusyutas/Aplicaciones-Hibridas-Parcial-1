@@ -13,12 +13,10 @@ const BrandsABM = () => {
     pais: ""
   });
 
-const endPoint =
-    "http://localhost:3000/api/marcas";
+const endPoint = "https://aplicaciones-hibridas-final-o6zz.onrender.com/api/marcas";
 
 const navigate = useNavigate();
-const { token } =
-  useContext(AuthContext);
+const { token } = useContext(AuthContext);
   useEffect(() => {
 
     if (!token) {

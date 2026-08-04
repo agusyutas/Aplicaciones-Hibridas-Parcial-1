@@ -18,7 +18,7 @@ const Home = () => {
     combustible: ""
 });
 
-const endPoint = "http://localhost:3000/api/autos";
+const endPoint = "https://aplicaciones-hibridas-final-o6zz.onrender.com/api/autos";
 const navigate = useNavigate();
 const { token, user } = useContext(AuthContext);
 
