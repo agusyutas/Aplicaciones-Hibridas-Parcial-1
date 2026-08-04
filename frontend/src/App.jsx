@@ -1,7 +1,10 @@
 import './App.css'
 import Header from './components/Header.jsx'
 import Nav from './components/Nav.jsx'
+import UsersABM  from './pages/UsersABM.jsx'
+import BrandsABM from './pages/BrandsABM';
 import Footer from './components/Footer.jsx'
+import { useState } from "react";
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 
 import Login from './pages/Login.jsx';
@@ -9,28 +12,48 @@ import Register from './pages/Register.jsx';
 import Home from './pages/Home.jsx';
 import NotFound from './pages/NotFound.jsx';
 
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from '../auth/ProtectedRoute.jsx'
+
 function App() {
 
-  const usuario = localStorage.getItem('usuario') || '';
+  const [usuario, setUsuario] = useState(
+  localStorage.getItem("usuario") || ""
+);
 
   return (
     <>
-      <BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Header>
+            <Nav usuario={usuario} setUsuario={setUsuario} />
+          </Header>
 
-        <Header>
-          <Nav usuario={usuario}/>
-        </Header>
+          <Routes>
+            <Route path='/' element={ <Login /> } />
+            <Route path='/register' element={ <Register /> } />
 
-        <Routes>
-          <Route path='/' element={ <Login /> } />
-          <Route path='/register' element={ <Register /> } />
-          <Route path='/cars' element={ <Home /> } />
-          <Route path='*' element={ <NotFound /> } />
-        </Routes>
+            <Route path='/cars' element={ 
+              <ProtectedRoute>
+                <Home /> 
+              </ProtectedRoute>
+              } />
 
-        <Footer descripcion = "Aplicacion Hibridas"/>
-        
-      </BrowserRouter>
+              <Route path="/brands" element={
+                  <ProtectedRoute>
+                    <BrandsABM />
+                  </ProtectedRoute>
+                }
+              />
+
+            <Route path='/users' element={ <UsersABM /> } />
+            <Route path='*' element={ <NotFound /> } />
+          </Routes>
+
+          <Footer descripcion = "Aplicacion Hibridas"/>
+          
+        </BrowserRouter>
+      </AuthProvider>
     </>
   ) 
 }

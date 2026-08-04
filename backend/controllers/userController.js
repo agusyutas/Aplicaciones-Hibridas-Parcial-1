@@ -34,7 +34,12 @@ const auth = async(req, res)=>{
         return res.status(200).json({
             msg: "Sesión iniciada correctamente",
             jwt: token,
-            name: user.name
+             usuario: {
+             _id: user._id,
+             name: user.name,
+             email: user.email,
+             rol: user.rol
+            }
         });
 
     } catch (error) {
@@ -120,21 +125,41 @@ const deleteUserById = async ( req, res) => {
 const updateUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, password, userId } = req.body;
-        if( !name || !password ){
-            res.status(400).json({ msg: 'Faltan campos obligatorios'})
-            return;
+        const { name, email, password, rol } = req.body;
+        const updateData = {
+            name,
+            email,
+            rol
+        };
+
+        if (password) {
+            updateData.password = await bcrypt.hash(password, salt);
         }
 
-        console.log('El usuario que actualizo es ', userId )
-        const hash = await bcrypt.hash(password, salt );
-        const user = await User.findByIdAndUpdate(id, {name, password:hash});
-        res.status(202).json({msg: 'Usuario Actualizado'});
+        const user = await User.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                msg: "Usuario no encontrado"
+            });
+        }
+
+        res.status(200).json({
+            msg: "Usuario actualizado",
+            user
+        });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({msg:'Tenemos un error :( en el servidor ', data: {}});
-    } 
-}
+        res.status(500).json({
+            msg: "Error del servidor"
+        });
+    }
+};
 
 export { postUser, getUsers, getUserById, deleteUserById, updateUserById, auth}
 

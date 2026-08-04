@@ -1,62 +1,81 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom"
+import { AuthContext } from "../context/AuthContext";
 
-const Nav = ( {usuario} ) => {
-  const [ logueado, setLogueado ] = useState(true)
-  const navigate = useNavigate();
+const Nav = ( {usuario, setUsuario} ) => {
+const navigate = useNavigate();
+const {logout, user} = useContext(AuthContext);
+const logueado = !!user?.name;
 
-  useEffect(() => {
-    const token = localStorage.getItem('jwt');
+   useEffect(() => {
     const userName = localStorage.getItem("usuario");
-    if(token) {
-      setLogueado(true); 
-      setUsuario(userName); 
-    } 
+
+    if (userName) {
+      setUsuario(userName);
+    }
   }, []);
 
-  const logout = ( ) => {
-    const salir = confirm('¿Seguro que desea Salir? ');
-    if( salir) {
-      setLogueado(  false );
-      localStorage.removeItem('jwt');
-      localStorage.removeItem('usuario');
-      navigate('/');
-    }
-  }
+  const handlerlogout = () => {
+    const salir = confirm("¿Seguro que desea Salir?");
 
-  const login = ( ) => {
-      setLogueado(  true );
-  }
+    if (salir) {
+      logout();
+      localStorage.removeItem("jwt");
+      localStorage.removeItem("usuario");
+      navigate("/");
+    }
+  };
 
   return (
     <nav>
         <h1>API autos</h1>
-            <ul className="menu-api">
-                <li>
-                    <NavLink to='/cars'>Autos</NavLink>
-                </li>
-                <li>
-                    <NavLink to="/register">Registro</NavLink>
-                </li>
-                <li>
-                    <NavLink to="/">Login</NavLink>
-                </li>
-            </ul>
+             <ul className="menu-api">
+        {user?.name && (
+        <li>
+          <NavLink to="/cars">Autos</NavLink>
+        </li>
+        )}
+
+        {user?.name && (
+        <li>
+          <NavLink to="/brands">Marcas</NavLink>
+        </li>
+      )}
+        
+        {user?.rol === "admin" && (
+        <li>
+          <NavLink to="/users">Usuarios</NavLink>
+        </li>
+        )}
+         
+        {!user?.name && (
+          <>
+            <li>
+              <NavLink to="/register">Registro</NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/">Login</NavLink>
+            </li>
+          </>
+        )}
+      </ul>
         <div className="user-info">
-            {
-               logueado ? (
-                <>
-                    <p> {usuario} </p>
-                    <div className="user-image"></div>
-                    <button onClick={ logout }><i className="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</button>
-                </>
-               ) : (
-                  <>
-                    <p> Loguearse</p>
-                    <button onClick={login }><i className="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</button>
-                  </>
-               )
-            }
+            {logueado ? (
+          <>
+            <p>{user?.name || usuario}</p>
+
+            <div className="user-image"></div>
+
+            <button onClick={handlerlogout}>
+              <i className="fa-solid fa-right-from-bracket"></i>
+              {" "}Cerrar Sesión
+            </button>
+          </>
+        ) : (
+          <>
+          </>
+        )}
 
         </div>
     </nav>

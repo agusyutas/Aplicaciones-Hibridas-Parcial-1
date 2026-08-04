@@ -31,7 +31,7 @@ const Register = () => {
     if( form.password1.length < 4 ){
       return "La contraseña debe contener al menos cuatro caracteres";
     }
-    if( form.password1 !== form.password2) return "Las contraseñas con coinciden";
+    if( form.password1 !== form.password2) return "Las contraseñas no coinciden";
 
     return null;
   }

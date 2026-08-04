@@ -1,12 +1,14 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Alert from '../components/Alert'
+import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
     const navigate = useNavigate();
     const [ error, setError ] = useState( false);
     const emailRef = useRef();
     const passwordRef = useRef();
+    const {login} = useContext(AuthContext);
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
@@ -28,12 +30,17 @@ const Login = () => {
 
             const response = await fetch( endPoint, option);
             const json = await response.json();
-
-            if(json.jwt) {
-                localStorage.setItem('jwt', json.jwt);
-                localStorage.setItem('usuario', user.name);
-                navigate('/cars');
-            } else {
+            if (response.ok && json.jwt) {
+                const usuario = {
+                    _id: json.usuario._id,
+                    name: json.usuario.name,
+                    email: json.usuario.email,
+                    rol: json.usuario.rol
+                };
+                console.log("Usuario guardado:", usuario);
+                login(usuario, json.jwt);   
+                navigate("/cars");
+            }else {
                 alert('Credenciales invalidas');
             }
             console.log( json );

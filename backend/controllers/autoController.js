@@ -1,6 +1,5 @@
 import Auto from '../model/autosModel.js';
 
-
 const getAutos = async (req, res) => {
     try {
         const {id, rol} = req.user;
@@ -53,41 +52,82 @@ const addAuto = async (req, res) => {
 const deleteAuto = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await Auto.findByIdAndDelete(id);
 
-        if (!result) {
-            return res.status(404).json({ msg: 'Auto no encontrado' });
+        const auto = await Auto.findById(id);
+
+        if (!auto) {
+            return res.status(404).json({
+                msg: 'Auto no encontrado'
+            });
         }
 
-        res.json({ msg: result });
+        if (
+            req.user.rol !== "admin" &&
+            auto.user.toString() !== req.user.id
+        ) {
+            return res.status(403).json({
+                msg: "No tenés permisos para eliminar este auto"
+            });
+        }
+
+        await Auto.findByIdAndDelete(id);
+
+        res.json({
+            msg: "Auto eliminado correctamente"
+        });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: 'Tenemos un error al eliminar el auto' });
+        res.status(500).json({
+            msg: 'Tenemos un error al eliminar el auto'
+        });
     }
 };
 
 const updateAuto = async (req, res) => {
     try {
         const { id } = req.params;
-        const auto = req.body;
-        const { marca, modelo, año, motor, potencia, velocidadMax, combustible } = auto;
+        const { marca, modelo, año, motor, potencia, velocidadMax, combustible } = req.body;
+        const auto = await Auto.findById(id);
 
-        if (!marca || !modelo || !año || !motor || !potencia || !velocidadMax || !combustible) {
-            return res.status(400).json({ msg: 'Faltan campos obligatorios' });
-        }
-        
-        const result = await Auto.findByIdAndUpdate(id, auto);
-
-        if (!result) {
+        if (!auto) {
             return res.status(404).json({ msg: 'Auto no encontrado' });
         }
 
-        res.json({ msg: 'Auto actualizado correctamente', auto: result });
+        if (
+            req.user.rol !== "admin" &&
+            auto.user.toString() !== req.user.id
+        ) {
+            return res.status(403).json({
+                msg: "No tenés permisos para editar este auto"
+            });
+        }
+
+        const autoActualizado = await Auto.findByIdAndUpdate(
+            id,
+            {
+                marca,
+                modelo,
+                año,
+                motor,
+                potencia,
+                velocidadMax,
+                combustible
+            },
+            { new: true }
+        );
+
+        res.json({
+            msg: "Auto actualizado correctamente",
+            auto: autoActualizado
+        });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: 'Tenemos un error al actualizar el auto' });
+        res.status(500).json({
+            msg: 'Tenemos un error al actualizar el auto'
+        });
     }
 };
-
 
 export{getAutos, getAutoById, addAuto, deleteAuto, updateAuto}

@@ -1,12 +1,14 @@
 import React from "react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Car from "../components/Car";
 import CarsContainer from "../components/CarsContainer";
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext'
 
 const Home = () => {
-    const [cars, setCars] = useState([]);
-    const [form, setForm] = useState({
+  const [cars, setCars] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState({
     marca: "",
     modelo: "",
     año: "",
@@ -14,59 +16,73 @@ const Home = () => {
     potencia: "",
     velocidadMax: "",
     combustible: ""
-  });
+});
 
-  const endPoint = "http://localhost:3000/api/autos";
-  const navigate = useNavigate();
-  useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
+const endPoint = "http://localhost:3000/api/autos";
+const navigate = useNavigate();
+const { token, user } = useContext(AuthContext);
 
-    if (!jwt) {
-      navigate("/");
-      return;
+useEffect(() => {
+          if (!token) {
+              navigate("/");
+              return;
+          }
+          const obtenerAutos = async () => {
+              try {
+                  const response = await fetch(endPoint, {
+                      headers: {
+                          Authorization: `Bearer ${token}`
+                      }
+                  });
+                  const data = await response.json();
+                  setCars(data);
+              } catch (error) {
+                  console.log(error);
+              }
+          };
+          obtenerAutos();
+}, [token]);
+
+const postAuto = async (auto) => {
+  const jwt = localStorage.getItem("jwt");
+  const option = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${jwt}` },
+    body: JSON.stringify(auto)
+};
+
+const resp = await fetch(endPoint, option);
+  if (resp.ok) {
+    const data = await resp.json();
+    return data.auto; 
+  }
+};
+
+const updateAuto = async (id, auto) => {
+const jwt = localStorage.getItem("jwt");
+const option = {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${jwt}`
+  },
+  body: JSON.stringify(auto)
+};
+
+const resp = await fetch(`${endPoint}/${id}`, option);
+  return resp.ok;
+};
+
+const handleDeleteCar = async ( _id) => {
+const jwt = localStorage.getItem("jwt");
+  console.log(`Eliminado auto ${_id}`)
+const option = {
+  method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwt}`
     }
-
-    fetch(endPoint, {
-      headers: {
-        "Authorization": `Bearer ${jwt}`
-      }
-    })
-      .then(res => res.json())
-      .then(json => {
-        setCars(json);
-      })
-      .catch(err => {
-        console.log(err);
-        alert("Error cargando autos");
-      });
-  }, []);
-
-   const postAuto = async (auto) => {
-    const jwt = localStorage.getItem("jwt");
-    const option = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${jwt}` },
-      body: JSON.stringify(auto)
-    };
-
-    const resp = await fetch(endPoint, option);
-    if (resp.ok) {
-      const data = await resp.json();
-      return data.auto; 
-    }
-  };
-
-  const handleDeleteCar = async ( _id) => {
-    const jwt = localStorage.getItem("jwt");
-    console.log(`Eliminado auto ${_id}`)
-    const option = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${jwt}`
-      }
-    }
-
+}
     try {
       const resp = await fetch( `${endPoint}/${_id}`, option);
       if( resp.ok ){
@@ -81,14 +97,27 @@ const Home = () => {
     }
   }
 
-  const manejadorSubmit = async (e) => {
-    e.preventDefault();
+const manejadorSubmit = async (e) => {
+  e.preventDefault();
+     try {
+      if (editingId) {
 
-    try {
-      const nuevoAuto = await postAuto(form);
+        const actualizado = await updateAuto(editingId, form);
 
-      setCars([...cars, nuevoAuto]); 
-
+        if (actualizado) {
+          setCars(
+            cars.map((car) =>
+              car._id === editingId
+                ? { ...car, ...form }
+                : car
+            )
+          );
+          setEditingId(null);
+        }
+      } else {
+        const nuevoAuto = await postAuto(form);
+        setCars([...cars, nuevoAuto]);
+      }
       setForm({
         marca: "",
         modelo: "",
@@ -98,12 +127,24 @@ const Home = () => {
         velocidadMax: "",
         combustible: ""
       });
-
     } catch (error) {
       console.log(error);
-      alert("Error creando auto");
+      alert("Error guardando auto");
     }
   };
+
+const handleEditCar = (auto) => {
+  setEditingId(auto._id);
+  setForm({
+    marca: auto.marca,
+    modelo: auto.modelo,
+    año: auto.año,
+    motor: auto.motor,
+    potencia: auto.potencia,
+    velocidadMax: auto.velocidadMax,
+    combustible: auto.combustible
+  });
+};
 
     return (
          <main className="cars-container">
@@ -111,10 +152,12 @@ const Home = () => {
                 form={form}
                 setForm={setForm}
                 manejadorSubmit={manejadorSubmit}
+                usuario={user}
             />
             <CarsContainer 
                 cars={cars}
                 deleteCar={handleDeleteCar}
+                editCar={handleEditCar}
             />
         </main>
     )

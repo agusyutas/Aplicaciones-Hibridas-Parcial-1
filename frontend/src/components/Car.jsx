@@ -1,4 +1,4 @@
-const Car = ({ form, setForm, manejadorSubmit }) => {
+const Car = ({ form, setForm, manejadorSubmit, usuario }) => {
 
   const handleChange = (e) => {
     setForm({
@@ -12,7 +12,6 @@ const Car = ({ form, setForm, manejadorSubmit }) => {
 
       <form className="car-form" onSubmit={manejadorSubmit}>
         <h2>Cargar Auto</h2>
-
         <input
           type="text"
           name="marca"

@@ -1,18 +1,13 @@
 import express from 'express';
-import {
-    getMarcas,
-    getMarcaById,
-    addMarca,
-    deleteMarcaById,
-    updateMarcaById
-} from '../controllers/marcaController.js';
+import validarToken from "../middlewares/auth.js";
+import { getMarcas, getMarcaById, addMarca, deleteMarcaById, updateMarcaById } from '../controllers/marcaController.js';
 
 const router = express.Router();
 
-router.get('/', getMarcas);
-router.get('/:id', getMarcaById);
-router.post('/', addMarca);
-router.delete('/:id', deleteMarcaById);
-router.put('/:id', updateMarcaById);
+router.get("/", validarToken, getMarcas);
+router.get("/:id", validarToken, getMarcaById);
+router.post("/", validarToken, addMarca);
+router.delete("/:id", validarToken, deleteMarcaById);
+router.put("/:id", validarToken, updateMarcaById);
 
 export default router;
