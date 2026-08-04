@@ -15,7 +15,7 @@ const UsersABM = () => {
     password: "",
     rol: "cliente"
   });
-  const endPoint = "http://localhost:3000/api/usuarios";
+  const endPoint = "https://aplicaciones-hibridas-final-o6zz.onrender.com/api/usuarios";
   const navigate = useNavigate();
   const { token, user } = useContext(AuthContext);
 
